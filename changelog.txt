@@ -1,0 +1,16 @@
+Changelog for TournamentScoring.py
+
+V0.1.0
+Created main commands (help, exit, addteam, teams, events)
+Each command has a function 
+help - shows a help menu for commands
+exit - uses the quit() function to exit the program
+addteam - starts the addteam function. User inputs team name then team members, a blank input saves the team
+teams - displays all teams and members
+events - displays all events, split into team and individual
+
+V0.1.1
+Created removeteam function.
+removeteam - User inputs a name or ID of a team, team is then removed
+Added shebang (#!/usr/bin/env python3)
+
