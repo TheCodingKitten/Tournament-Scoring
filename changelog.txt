@@ -1,6 +1,6 @@
 Changelog for TournamentScoring.py
 
-V0.1.0
+V0.1.0 - 
 Created main commands (help, exit, addteam, teams, events)
 Each command has a function 
 help - shows a help menu for commands
@@ -9,8 +9,20 @@ addteam - starts the addteam function. User inputs team name then team members, 
 teams - displays all teams and members
 events - displays all events, split into team and individual
 
-V0.1.1
+V0.1.1 - 
 Created removeteam function.
 removeteam - User inputs a name or ID of a team, team is then removed
 Added shebang (#!/usr/bin/env python3)
+Uploaded to GitHub
 
+V0.1.2 - 21/01/2025
+Added import and export from/to CSV file
+
+V0.1.2-1 - 21/01/2025
+Fixed team ID error on adding new team after importing. The imported team IDs were not removed from the list of missing team IDs
+Added confirmation to import (if the current teams list is not empty)
+
+To Do
+Add individual and team limits
+Scoring system
+Add results to teams

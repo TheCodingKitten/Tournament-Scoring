@@ -2,7 +2,9 @@
 
 # Tournament Scoring and Management
 # Created by Henry Nevill
-# https://github.com/TheCodingKitten/
+# https://github.com/TheCodingKitten/Tournament-Scoring/
+
+import csv
 
 # Define available commands and meanings
 mainCommands = {
@@ -39,7 +41,8 @@ individualEvents = {
 
 # Initialise participants list. Entries will be stored as a list within this list to allow for teams and individuals
 # Format for team list: Team ID, Team Name, Score, Member Names...
-teams = [[1, 'Munchkins', 0, 'Tom', 'Charlie'], [2, 'Smarties', 0, 'Harry', 'Patricia']]
+teamsFormat = ["Team ID", "Team Name", "Score", "Member Names"]
+teams = []
 
 totalTeams = 0
 
@@ -50,12 +53,14 @@ def addTeam(teamID):
 	team.append(input("Team name: "))
 	team.append(0)
 	print("Add team member names: ")
+	teamMembers = []
 	while True:
 		userInputParticipant = input("- ").strip()
 		if userInputParticipant == "":
 			break
 		else:
-			team.append(userInputParticipant)
+			teamMembers.append(userInputParticipant)
+	team.append(teamMembers)
 	teams.insert((teamID - 1), team)
 	print(f"Team {teamID} added")
 
@@ -77,7 +82,6 @@ def removeTeam():
 					break
 			except:
 				continue
-		print("No team found")
 
 # Print teams function
 def printTeams():
@@ -85,10 +89,67 @@ def printTeams():
 	print("Teams:")
 	for team in teams:
 		print(f"{team[0]}: {team[1]}: ", end="")
-		for member in team[3:]:
+		for member in team[3]:
 			output.append(member)
 		print(", ".join(output))
 		output = []
+
+# Import from CSV file
+def importFromCSV(filename):
+	global teams
+	
+	if filename == "": # Check if filename blank
+		filename = "example.csv" # Set default filename
+	
+	if teams != []:
+		print("Current teams list is not empty, continuing will overwrite current teams.")
+		userInputContinue = input("Type Y to continue, anything else to cancel: ").lower()
+		if userInputContinue != "y":
+			print("Cancelling import")
+			return # Stop function
+	
+	print(f"Importing from {filename}")
+	
+	with open(filename, newline="") as csvFile:
+		fileReader = csv.reader(csvFile, dialect="excel")
+		output = []
+		for row in fileReader:
+			entryOutput = []
+			for entry in row:
+				entryOutput.append(entry)
+			output.append(entryOutput)
+		output.pop(0) # Removes header line
+		
+		# Convert teamIDs to int
+		for team in output:
+			team[0] = int(team[0])
+		
+		# Replace string of names with list
+		for team in output:
+			team[3] = team[3].split(",")
+	
+	numImported = len(output)
+	print(f"Imported {numImported} teams from {filename}")
+	
+	teams = output
+
+# Export to CSV file
+def exportToCSV(filename):
+	if filename == "": # Check if filename blank
+		filename = "writeexample.csv" # Set default filename
+	
+	print(f"Exporting to {filename}")
+	
+	with open(filename, "w", newline="") as csvFile:
+		fileWriter = csv.writer(csvFile, dialect="excel")
+		
+		fileWriter.writerow(teamsFormat)
+		
+		for team in teams:
+			team[3] = ",".join(team[3])
+			print(team[3])
+			fileWriter.writerow(team)
+		
 
 def main():
 	# Create list of all team IDs
@@ -115,7 +176,7 @@ def main():
 	
 	elif userInputCommand == "addteam":
 		totalTeams += 1
-		addTeam(missingTeamIDs[0])
+		addTeam(missingTeamIDs[-1])
 		missingTeamIDs.pop(0)
 	
 	elif userInputCommand == "removeteam":
@@ -141,10 +202,17 @@ def main():
 			output.append(event)
 		print(", ".join(output))
 
+	elif userInputCommand == "import":
+		importFromCSV(input("Filename: "))
+
+	elif userInputCommand == "export":
+			exportToCSV(input("Filename: "))
+
 	else:
 		print("Invalid command given.")
 
 # Run script if script is run specifically
 if __name__ == "__main__":
+	commandHelp()
 	while True:
 		main()
